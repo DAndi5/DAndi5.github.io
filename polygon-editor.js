@@ -10,93 +10,121 @@ class PolygonEditor extends HTMLElement {
     this.attachShadow({mode: 'open'});
     this.shadowRoot.innerHTML = `
         <style>
-          canvas {
-              cursor: crosshair;
+          body {
+          display: flex;
+          margin: 0;
+          font-family: Arial, sans-serif;
+          /*background-color: #f0f0f0;*/
+          background-color: #4D4D4D;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 99vh;
+          border: solid rgba(45, 45, 45, 0.90);
           }
-          .canvas-area {
-            background-color: #999999;
-            box-shadow: 0 0 10px rgba(1, 1, 1, 0.51);
-            border: solid rgba(45, 45, 45, 0.90);
-          }
-          .panel {
-              width: 300px;
-              padding: 10px;
-              background-color: #4D4D4D;
-              color: #f7f4f4; /* Темно-серый текст */
-              text-align: center;
-          }
-          .panel h2 {
-            margin: 0;
-            padding: 10px;
-          }
-          .panel button {
-            background-image: linear-gradient(to bottom, rgb(148,148,148), rgb(148,148,148), rgba(130,130,130,0.5), rgba(128,128,128,0));
-            box-shadow: 0 4px 15px 0 rgba(72, 83, 97, 0.75);
-            color: #f7f4f4;
-            border-radius: 10px;
-            margin: 8px 0;
-            padding: 10px;
-            border: solid rgba(45, 45, 45, 0.90);
-            transition: all 0.5s ease;
-            font-size: 16px;
-            font-weight: bold;
-          }
-          .panel button:hover{
-            box-shadow: 0 0 0 0 rgba(0, 40, 120, 0);
-            transform: scale(0.930);
-          }
-          #createPoints, #drawPolygon, #toggleDirection, #clear {
-            width: 100%;
-          }
-          #firstPoint, #secondPoint {
-            width: 50%;
-          }
-          #pointlabelf, #pointlabels {
-            padding: 10px;
-            width: 30%;
-            display: inline-block;
-            margin: 10px 0 10px 10px;
-            color: #f7f4f4; /* Темно-серый текст */
-          }
-          .panel .status {
-              margin: 10px 0;
-              font-weight: bold;
-              color: #f7f4f4; /* Темно-серый текст */
-              text-align: right;
-          }
-          .panel .status.invalid {
-              color: #ff4444; /* Красный для недопустимого состояния */
-          }
-          .panel .status.valid {
-              color: #44cc44; /* Зеленый для допустимого состояния */
-          }
-          h2 {
-              color: #f7f4f4; /* Темно-серый текст для заголовков */
-          }
-          .container {
-            display: flex;
-          }
+           canvas {
+    cursor: crosshair;
+  }
 
-        </style>
+  .canvas-area {
+    background-color: #999999;
+    box-shadow: 0 0 10px rgba(1, 1, 1, 0.51);
+    border: 1px solid rgba(45, 45, 45, 0.9);
+  }
+
+  .panel {
+    width: 300px;
+    padding: 20px;
+    background-color: #4D4D4D;
+    color: #f7f4f4;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(72, 83, 97, 0.75);
+  }
+
+  .panel h2 {
+    margin: 0 0 20px 0;
+    padding: 0;
+    font-size: 24px;
+    color: #f7f4f4;
+  }
+
+  .panel button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background-image: linear-gradient(to bottom, #949494, #949494, rgba(130, 130, 130, 0.5), rgba(128, 128, 128, 0));
+    box-shadow: 0 4px 15px rgba(72, 83, 97, 0.75);
+    color: #f7f4f4;
+    border: 1px solid rgba(45, 45, 45, 0.9);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .panel button:hover {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(72, 83, 97, 0.5);
+  }
+
+  .panel button:active {
+    transform: scale(0.95);
+  }
+
+  #firstPoint, #secondPoint {
+    width: 48%;
+  }
+
+  #pointlabelf, #pointlabels {
+    padding: 10px;
+    width: 30%;
+    display: inline-block;
+    margin: 10px 0 10px 10px;
+    color: #f7f4f4;
+  }
+
+  .panel .status {
+    margin: 10px 0;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  .panel .status.invalid {
+    color: #ff4444;
+  }
+
+  .panel .status.valid {
+    color: #44cc44;
+  }
+
+  .container {
+    display: flex;
+    gap: 20px;
+  }
+</style>
             <div class="container">
-              <div class="canvas-area">
-              <canvas width="800" height="600"></canvas>
-              </div>
+              <div class="container">
+                <div class="canvas-area">
+                <canvas width="800" height="600"></canvas>
+                </div>
 
-              <div class="panel">
-                  <h2>Create polygon</h2>
-                  <button id="createPoints">Create points</button>
-                  <div id="pointsCount" class="status">Created 0 points</div>
-                  <button id="drawPolygon" disabled>Draw polygon</button>
-                  <h2>Create path</h2>
+                <div class="panel">
+                    <h2>Create polygon</h2>
+                    <button id="createPoints">Create points</button>
+                    <div id="pointsCount" class="status">Created 0 points</div>
+                    <button id="drawPolygon" disabled>Draw polygon</button>
+                    <h2>Create path</h2>
 
-                  <div class="container"><button id="firstPoint" disabled>First point </button> <div id="pointlabelf">1</div></div>
-                  <div class="container"><button id="secondPoint" disabled>Second point </button> <div id="pointlabels">2</div></div>
+                    <div class="container"><button id="firstPoint" disabled>First point </button> <div id="pointlabelf">1</div></div>
+                    <div class="container"><button id="secondPoint" disabled>Second point </button> <div id="pointlabels">2</div></div>
 
-                  <button id="toggleDirection" disabled>Clockwise order</button>
-                  <button id="clear" disabled>Clear</button>
-                  <div id="pathInfo">Path: </div>
+                    <button id="toggleDirection" disabled>Clockwise order</button>
+                    <button id="clear" disabled>Clear</button>
+                    <div id="pathInfo">Path: </div>
 
+                </div>
               </div>
             </div>
         `;
