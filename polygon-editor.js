@@ -121,7 +121,7 @@ class PolygonEditor extends HTMLElement {
                     <div class="container"><button id="secondPoint" disabled>Second point </button> <div id="pointlabels">2</div></div>
 
                     <button id="toggleDirection" disabled>Clockwise order</button>
-                    <div class="container"><button id="clear" disabled>Clear</button>  <button id="clearStorage">Clear saved polygon</button></div>
+                    <div class="container"><button id="clear" disabled>Clear</button>  <button id="clearStorage" disabled>Clear saved polygon</button></div>
                     <div id="pathInfo">Path: </div>
 
                 </div>
@@ -167,6 +167,7 @@ class PolygonEditor extends HTMLElement {
     this.secondPointButton.disabled = true;
     this.toggleDirectionButton.disabled = true;
     this.clearButton.disabled = true;
+    this.clearStorageButton.disabled = true;
     this.pointsCount.textContent = 'Created 0 points';
     this.pointsCount.classList.remove('valid', 'invalid');
     this.pathInfo.textContent = 'Path: ';
@@ -355,16 +356,19 @@ class PolygonEditor extends HTMLElement {
   savePolygon() {
     // Сохраняем вершины полигона в localStorage
     localStorage.setItem('savedPolygon', JSON.stringify(this.vertices));
+    this.clearStorageButton.disabled = false;
   }
 
   loadPolygon() {
     // Загружаем вершины полигона из localStorage
     const savedPolygon = localStorage.getItem('savedPolygon');
+    this.clearStorageButton.disabled = true;
     if (savedPolygon) {
       this.vertices = JSON.parse(savedPolygon);
       this.updatePointsCount();
       this.drawPolygon();
       this.drawVertices();
+      this.clearStorageButton.disabled = false;
     }
   }
 
@@ -372,6 +376,7 @@ class PolygonEditor extends HTMLElement {
     // Очищаем localStorage
     localStorage.removeItem('savedPolygon');
     this.clear(); // Очищаем текущий полигон
+    this.clearStorageButton.disabled = true;
   }
 
 }
