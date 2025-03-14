@@ -121,7 +121,7 @@ class PolygonEditor extends HTMLElement {
                     <div class="container"><button id="secondPoint" disabled>Second point </button> <div id="pointlabels">2</div></div>
 
                     <button id="toggleDirection" disabled>Clockwise order</button>
-                    <button id="clear" disabled>Clear</button>
+                    <div class="container"><button id="clear" disabled>Clear</button>  <button id="clearStorage">Clear saved polygon</button></div>
                     <div id="pathInfo">Path: </div>
 
                 </div>
@@ -141,6 +141,7 @@ class PolygonEditor extends HTMLElement {
     this.pathInfo = this.shadowRoot.querySelector('#pathInfo');
     this.firstPointLabel = this.shadowRoot.querySelector('#pointlabelf');
     this.secondPointLabel = this.shadowRoot.querySelector('#pointlabels');
+    this.clearStorageButton = this.shadowRoot.querySelector('#clearStorage');
 
     this.createPointsButton.addEventListener('click', () => this.enablePointCreation());
     this.drawPolygonButton.addEventListener('click', () => this.drawPolygon());
@@ -149,6 +150,9 @@ class PolygonEditor extends HTMLElement {
     this.toggleDirectionButton.addEventListener('click', () => this.toggleDirection());
     this.clearButton.addEventListener('click', () => this.clear());
     this.canvas.addEventListener('click', this.handleCanvasClick.bind(this));
+    this.clearStorageButton.addEventListener('click', () => this.clearStorage());
+    // Загрузка сохраненного полигона
+    this.loadPolygon();
   }
 
   enablePointCreation() {
@@ -290,6 +294,8 @@ class PolygonEditor extends HTMLElement {
     this.toggleDirectionButton.disabled = false;
     this.clearButton.disabled = false;
     this.canvas.style.cursor = 'default';
+    // Сохранение полигона в localStorage
+    this.savePolygon();
   }
 
   startSelectingPoint(type) {
@@ -342,6 +348,30 @@ class PolygonEditor extends HTMLElement {
     }
 
     this.drawVertices();
+  }
+
+
+
+  savePolygon() {
+    // Сохраняем вершины полигона в localStorage
+    localStorage.setItem('savedPolygon', JSON.stringify(this.vertices));
+  }
+
+  loadPolygon() {
+    // Загружаем вершины полигона из localStorage
+    const savedPolygon = localStorage.getItem('savedPolygon');
+    if (savedPolygon) {
+      this.vertices = JSON.parse(savedPolygon);
+      this.updatePointsCount();
+      this.drawPolygon();
+      this.drawVertices();
+    }
+  }
+
+  clearStorage() {
+    // Очищаем localStorage
+    localStorage.removeItem('savedPolygon');
+    this.clear(); // Очищаем текущий полигон
   }
 
 }
